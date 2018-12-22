@@ -8,7 +8,7 @@ MAN=
 .PATH: ${GCCDIR}/cp ${GCCDIR}
 
 PROG=	cc1plus
-SRCS=	cfns.h
+#SRCS=	cfns.h
 SRCS+=	main.c cp-lang.c c-opts.c call.c class.c cvt.c cxx-pretty-print.c \
 	decl.c decl2.c error.c except.c expr.c dump.c friend.c  init.c lex.c \
 	mangle.c method.c name-lookup.c parser.c pt.c ptree.c repo.c rtti.c \
@@ -28,10 +28,10 @@ LDADD=	${LIBBACKEND} ${LIBCPP} ${LIBDECNUMBER} ${LIBIBERTY}
 
 #-----------------------------------------------------------------------
 # C++ parser
-cfns.h: cfns.gperf
-	gperf -o -C -E -k '1-6,$$' -j1 -D -N 'libc_name_p' -L ANSI-C \
-	    ${.ALLSRC} > ${.TARGET} || (rm -f ${.TARGET}; false)
-CLEANFILES= cfns.h
+#cfns.h: cfns.gperf
+#	gperf -o -C -E -k '1-6,$$' -j1 -D -N 'libc_name_p' -L ANSI-C \
+#	    ${.ALLSRC} > ${.TARGET} || (rm -f ${.TARGET}; false)
+#CLEANFILES= cfns.h
 
 DOBJS+=	${SRCS:N*.h:R:S/$/.o/g}
 ${PROG}-dummy:	${DOBJS}

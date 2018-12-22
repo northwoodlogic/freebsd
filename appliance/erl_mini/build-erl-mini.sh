@@ -42,14 +42,28 @@ echo "DONE DISTRIBUTE WORLD"
 	cd ${DESTDIR}
 	# don't want static archives
 	rm usr/lib/*.a
+
 	# uzip rootfs is ro, no need to fsck
 	echo "/dev/md0.uzip / ufs ro 0 0" > etc/fstab
 
 	cat << EOT > etc/rc.conf
 root_rw_mount="NO"
+entropy_file="NO"
 hostid_enable="NO"
 hostname="edge"
 EOT
+
+	# Dummy rc.local placeholder
+	cat << EOT > etc/rc.local
+#!/bin/sh
+echo "Hello"
+EOT
+	chmod a+x etc/rc.local
+
+	# trigger 'rc.initdiskless' and copy everything in /etc by default
+	touch etc/diskless
+	mkdir -p conf/base/etc
+	tar -cf - -C etc/ . | tar -xf - -C conf/base/etc/
 
 )
 makefs -B big -t ffs ${MINI_IMG} ${DESTDIR}

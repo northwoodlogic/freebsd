@@ -1455,7 +1455,7 @@ void route_sock(void);
 #endif
 
 /* bpf.c or netlink.c */
-int iface_enumerate(int family, void *parm, int (callback)());
+int iface_enumerate(int family, void *parm, int (*callback)(void));
 
 /* dbus.c */
 #ifdef HAVE_DBUS

@@ -61,6 +61,7 @@ CONFS=	DAEMON \
 	${_kpasswdd} \
 	ldconfig \
 	local \
+	local_dnsmasq \
 	localpkg \
 	lockd \
 	mixer \

@@ -1,0 +1,96 @@
+#!/bin/sh
+
+# $FreeBSD$
+#
+
+# PROVIDE: local_dnsmasq
+# REQUIRE: SERVERS ldconfig
+# BEFORE:  DAEMON
+# KEYWORD: shutdown
+#
+# Please add the following line to /etc/rc.conf.local or /etc/rc.conf to
+# enable the dnsmasq service(s):
+#
+# local_dnsmasq_enable (bool):  Set to "NO" by default.
+#                         Set it to "YES" to enable dnsmasq at boot.
+#
+# Further settings you can change in /etc/rc.conf if desired:
+#
+# local_dnsmasq_conf (path):    Set to /etc/dnsmasq.conf by default.
+#                         Set it to another configuration file if you want.
+#
+# local_dnsmasq_flags (string): Empty by default. Set it to additional command
+#                         line arguments if desired.
+#
+# local_dnsmasq_restart (bool): Set to "YES" by default.
+#                         If "YES", a "reload" action will trigger a "restart"
+#                         if the configuration file has changed, to work
+#                         around a dnsmasq(8) limitation.
+#
+#
+# Additional actions supported by this script:
+#
+# reload        Reload database files by sending SIGHUP and SIGUSR2.
+#               However, if dnsmasq_restart is true (see above) and the
+#               configuration file has changed since this rc script has
+#               started dnsmasq, restart it instead.
+#
+# logstats      Dump statistics information to where dnsmasq is configured to
+#               log (syslog by default). This sends SIGUSR1 to dnsmasq.
+#
+
+. /etc/rc.subr
+
+name=local_dnsmasq
+rcvar=local_dnsmasq_enable
+
+command="/usr/sbin/local-dnsmasq"
+pidfile="/var/run/local-dnsmasq.pid"
+# timestamp (below) is used to check if "reload" should be a "restart" instead
+timestamp="/var/run/local-dnsmasq.stamp"
+
+load_rc_config "${name}"
+
+: ${local_dnsmasq_enable="NO"}
+: ${local_dnsmasq_conf="/etc/dnsmasq.conf"}
+: ${local_dnsmasq_restart="YES"}
+
+command_args="-x $pidfile -C $local_dnsmasq_conf"
+
+required_files="${local_dnsmasq_conf}"
+extra_commands="reload logstats"
+
+reload_precmd="reload_pre"
+reload_postcmd="reload_post"
+start_postcmd="timestampconf"
+stop_precmd="rmtimestamp"
+logstats_cmd="logstats"
+
+reload_pre() {
+        if [ "$local_dnsmasq_conf" -nt "${timestamp}" ] ; then
+                if checkyesno dnsmasq_restart ; then
+                        info "restart: $local_dnsmasq_conf changed"
+                        exec "$0" restart
+                else
+                        warn "restart required, $local_dnsmasq_conf changed"
+                fi
+        fi
+}
+
+reload_post() {
+        kill -USR2 ${rc_pid}
+}
+
+logstats() {
+        kill -USR1 ${rc_pid}
+}
+
+timestampconf() {
+        touch -r "${local_dnsmasq_conf}" "${timestamp}"
+}
+
+rmtimestamp() {
+        rm -f "${timestamp}"
+}
+
+run_rc_command "$1"

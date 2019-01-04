@@ -77,6 +77,7 @@ SUBDIR=	adduser \
 	rpc.umntall \
 	rtprio \
 	rwhod \
+	savecfg \
 	service \
 	services_mkdb \
 	sesutil \

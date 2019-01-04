@@ -46,25 +46,47 @@ echo "DONE DISTRIBUTE WORLD"
 	# uzip rootfs is ro, no need to fsck
 	echo "/dev/md0.uzip / ufs ro 0 0" > etc/fstab
 
-	cat << EOT > etc/rc.conf
-root_rw_mount="NO"
-entropy_file="NO"
-hostid_enable="NO"
-hostname="edge"
-EOT
+	# /cfg is best effort, if this is marked noauto then init system will
+	# umount /cfg if it happens be mounted by the rc.initcfg script???
+	echo "/dev/da0s1 /cfg msdosfs ro,failok 0 0" >> etc/fstab
+
+	# defaults for the appliance image. These can be overridded by
+	# the normal /etc/rc.conf config file.
+	cat <<- EOT > etc/defaults/vendor.conf
+	hostname="edge"
+	root_rw_mount="NO"
+	entropy_file="NO"
+	hostid_enable="NO"
+	sshd_enable="YES"
+	ifconfig_gi1_ipv6="auto_linklocal accept_rtadv"
+	EOT
+
+	# Write out an interface map. This allows the config shell to use a
+	# consistent interface naming scheme and identifies physical
+	# interfaces in the system.
+	cat <<- EOT > etc/iface.map
+	gi1:octe0
+	gi2:octe1
+	gi3:octe2
+	EOT
+
 
 	# Dummy rc.local placeholder
-	cat << EOT > etc/rc.local
-#!/bin/sh
-echo "Hello"
-EOT
+	cat <<- EOT > etc/rc.local
+	#!/bin/sh
+	echo "Hello"
+	EOT
+
 	chmod a+x etc/rc.local
+
+	# Trigger rc.initcfg
+	mkdir cfg
+	touch etc/initcfg
 
 	# trigger 'rc.initdiskless' and copy everything in /etc by default
 	touch etc/diskless
 	mkdir -p conf/base/etc
 	tar -cf - -C etc/ . | tar -xf - -C conf/base/etc/
-
 )
 makefs -B big -t ffs ${MINI_IMG} ${DESTDIR}
 mkuzip -o ${MINI_IMG}.uzip ${MINI_IMG}

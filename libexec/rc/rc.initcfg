@@ -1,0 +1,58 @@
+#!/bin/sh -
+: ${CFG_DIR="/cfg"}
+: ${CFG_RETRY="5"}
+: ${IFACE_MAP="/etc/iface.map"}
+: ${STARTUP_SCRIPT="startup.sh"}
+: ${STARTUP_CONFIG="startup-config.tar"}
+
+i=0
+mnt_ok=0
+mount | grep ${CFG_DIR} > /dev/null 2>&1
+if [ "$?" != "0" ] ; then
+	# It may take a while for storage devices to show up.
+	while [ "$i" -lt "${CFG_RETRY}" ] ; do
+		mount ${CFG_DIR}
+		if [ "$?" = "0" ] ; then
+			mnt_ok=1
+			break
+		fi
+		i=$(( i + 1 ))
+		sleep 1
+	done
+else
+	mnt_ok=1
+fi
+
+# Rename interfaces for config shell usage
+if [ -f ${IFACE_MAP} ] ; then
+	ifl=$(cat ${IFACE_MAP})
+	for iface in ${ifl} ; do
+		new=$(echo $iface | cut -f 1 -d ':')
+		old=$(echo $iface | cut -f 2 -d ':')
+		echo "renaming interface: $old --> $new"
+		# TODO: Wait for USB interfaces to enumerate
+		ifconfig ${old} name ${new} > /dev/null 2>&1
+	done
+fi
+
+if [ "$mnt_ok" = "0" ] ; then
+	echo "unable to mount ${CFG_DIR}"
+	exit 1
+fi
+
+# In order to prevent clobbering default / distro provided config files make a
+# backup copy if unpacking the startup config would otherwise wipe them out.
+# That gives the user a chance to see if any defaults may have changed with a
+# fw upgrade and adjust accordingly.
+if [ -r ${CFG_DIR}/${STARTUP_CONFIG} ] ; then
+	tar -tf ${CFG_DIR}/${STARTUP_CONFIG} | \
+		xargs -I {} sh -c "[ -r /{} ] && mv {} {}.savecfg"
+	tar -xf ${CFG_DIR}/${STARTUP_CONFIG} -C /
+fi
+
+if [ -r ${CFG_DIR}/${STARTUP_SCRIPT} ] ; then
+	/bin/sh ${CFG_DIR}/${STARTUP_SCRIPT}
+fi
+
+echo "rc.initcfg done"
+

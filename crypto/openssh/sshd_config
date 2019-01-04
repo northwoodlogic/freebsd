@@ -13,6 +13,12 @@
 
 # Note that some of FreeBSD's defaults differ from OpenBSD's, and
 # FreeBSD has a few additional options.
+#
+# This (northwoodlogic appliance images) default differs from both.
+# *) Password authentication is disabled all together
+# *) root is allowed key based login only
+# *) per-user authorized keys path is moved to /etc/ssh/authorized_keys.%u
+# *) UseDNS is turned off
 
 #Port 22
 #AddressFamily any
@@ -33,7 +39,7 @@
 # Authentication:
 
 #LoginGraceTime 2m
-#PermitRootLogin no
+PermitRootLogin without-password
 #StrictModes yes
 #MaxAuthTries 6
 #MaxSessions 10
@@ -42,7 +48,7 @@
 
 # The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
 # but this is overridden so installations will only check .ssh/authorized_keys
-AuthorizedKeysFile	.ssh/authorized_keys
+AuthorizedKeysFile	/etc/ssh/authorized_keys.%u
 
 #AuthorizedPrincipalsFile none
 
@@ -62,7 +68,7 @@ AuthorizedKeysFile	.ssh/authorized_keys
 #PermitEmptyPasswords no
 
 # Change to no to disable PAM authentication
-#ChallengeResponseAuthentication yes
+ChallengeResponseAuthentication no
 
 # Kerberos options
 #KerberosAuthentication no
@@ -99,7 +105,7 @@ AuthorizedKeysFile	.ssh/authorized_keys
 #Compression delayed
 #ClientAliveInterval 0
 #ClientAliveCountMax 3
-#UseDNS yes
+UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10:30:100
 #PermitTunnel no

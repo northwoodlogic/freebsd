@@ -64,6 +64,10 @@ if [ ${dlv:=0} -ne 0 -o -f /etc/diskless ]; then
 	sh /etc/rc.initdiskless
 fi
 
+if [ -f /etc/initcfg ] ; then
+	sh /etc/rc.initcfg
+fi
+
 # Run these after determining whether we are booting diskless in order
 # to minimize the number of files that are needed on a diskless system,
 # and to make the configuration file variables available to rc itself.

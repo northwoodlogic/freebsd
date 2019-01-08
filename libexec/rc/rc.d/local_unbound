@@ -86,6 +86,13 @@ local_unbound_setup()
 #
 local_unbound_prestart()
 {
+	# BUG-ON: 'rc.initcfg' runs before /var tmpfs is configured.
+	# startup-config.tar can not extract to the unbound config dir
+	# /var/unbound/... at that time.
+	if [ -f /etc/unbound.conf ] ; then
+		cp -a /etc/unbound.conf ${local_unbound_config}
+	fi
+
 	# Create configuration file
 	if [ ! -f ${local_unbound_config} ] ; then
 		run_rc_command setup

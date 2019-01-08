@@ -47,7 +47,9 @@ populate_var()
 	[Nn][Oo][Nn][Ee])
 		;;
 	*)
-		/usr/sbin/mtree -deiU -f /etc/mtree/BSD.sendmail.dist -p / > /dev/null
+		if [ -f /etc/mtree/BSD.sendmail.dist ] ; then
+			/usr/sbin/mtree -deiU -f /etc/mtree/BSD.sendmail.dist -p / > /dev/null
+		fi
 		;;
 	esac
 }

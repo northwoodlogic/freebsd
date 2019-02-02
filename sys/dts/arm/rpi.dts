@@ -31,7 +31,7 @@
 	/* This is only necessary for FDT_DTB_STATIC */
 	memory {
 		device_type = "memory";
-		reg = <0 0x8000000>; /* 128MB, Set by VideoCore */
+		reg = <0 0x1c000000>; /* ~450MB, Set by VideoCore */
 	
 	};
 

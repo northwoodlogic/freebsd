@@ -1,0 +1,117 @@
+#
+# RPI-B -- Custom configuration for the Raspberry Pi
+#
+# For more information on this file, please read the config(5) manual page,
+# and/or the handbook section on Kernel Configuration Files:
+#
+#    https://www.FreeBSD.org/doc/en_US.ISO8859-1/books/handbook/kernelconfig-config.html
+#
+# The handbook is also available locally in /usr/share/doc/handbook
+# if you've installed the doc distribution, otherwise always see the
+# FreeBSD World Wide Web server (https://www.FreeBSD.org/) for the
+# latest information.
+#
+# An exhaustive list of options and more detailed explanations of the
+# device lines is also present in the ../../conf/NOTES and NOTES files.
+# If you are in doubt as to the purpose or necessity of a line, check first
+# in NOTES.
+#
+# $FreeBSD$
+
+ident		RPI_MINI
+
+# Don't build modules
+makeoptions	MODULES_OVERRIDE=""
+
+include 	"std.armv6"
+include 	"../broadcom/bcm2835/std.rpi"
+include 	"../broadcom/bcm2835/std.bcm2835"
+
+options 	SCHED_ULE
+options 	PLATFORM
+
+device		bpf
+device		loop
+device		ether
+device		uart
+device		pty
+device		snp
+device		pl011
+
+
+# firewall & other things
+options		LIBALIAS
+options		IPDIVERT
+options		IPFIREWALL
+#options		IPFIREWALL_6RD
+options		IPFIREWALL_NAT
+options		IPFIREWALL_NAT64
+options		IPFIREWALL_NPTV6
+options		IPFIREWALL_DEFAULT_TO_ACCEPT
+
+# Device mode support
+device		usb_template    	# Control of the gadget
+
+# Comment following lines for boot console on serial port
+device		vt
+device		kbdmux
+device		ukbd
+
+device		sdhci
+device		mmc
+device		mmcsd
+
+device		gpio
+device		gpioled
+
+# I2C
+device		iic
+device		iicbus
+device		bcm2835_bsc
+
+device		random			# Entropy device
+
+# USB support
+device		usb
+device		dwcotg			# DWC OTG controller
+
+# USB storage support
+device		scbus
+device		da
+device		umass
+
+# USB ethernet support
+device		smcphy
+device		mii
+device		smsc
+
+# SPI
+device		spibus
+device		bcm2835_spi
+
+device		vchiq
+device		sound
+
+device		fdt_pinctrl
+
+# Flattened Device Tree
+options 	FDT			# Configure using FDT/DTB data
+# Note:  DTB is normally loaded and modified by RPi boot loader, then
+# handed to kernel via U-Boot and ubldr.
+
+# This is temporary!
+options 	FDT_DTB_STATIC
+makeoptions	FDT_DTS_FILE=rpi.dts
+#
+#
+makeoptions	MODULES_EXTRA="dtb/rpi rpi_ft5406"
+
+
+device		md
+options		MD_ROOT
+options		GEOM_UZIP
+options 	ROOTDEVNAME=\"ufs:md0.uzip\"	# Default root filesystem.
+
+# 64M minimum when using the non-uzip image.
+#options		MD_ROOT_SIZE=65536
+makeoptions	MFS_IMAGE=@mfs_image@

@@ -95,6 +95,7 @@ options		TMPFS			# Temporary file system
 options		LIBALIAS
 options		IPDIVERT
 options		IPFIREWALL
+#options		IPFIREWALL_6RD
 options		IPFIREWALL_NAT
 options		IPFIREWALL_NAT64
 options		IPFIREWALL_NPTV6

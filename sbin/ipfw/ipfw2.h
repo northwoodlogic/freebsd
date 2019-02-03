@@ -296,6 +296,13 @@ enum tokens {
 	TOK_PREFIXLEN,
 	TOK_EXTIF,
 
+	/* 6rd tokens */
+	TOK_6RD,
+	TOK_6RD_PREFIX,
+	TOK_6RD_MASKLEN,
+	TOK_6RD_RELAY,
+	TOK_6RD_CE4,
+
 	TOK_TCPSETMSS,
 
 	TOK_SKIPACTION,
@@ -388,6 +395,7 @@ void ipfw_internal_handler(int ac, char *av[]);
 void ipfw_nat64lsn_handler(int ac, char *av[]);
 void ipfw_nat64stl_handler(int ac, char *av[]);
 void ipfw_nptv6_handler(int ac, char *av[]);
+void ipfw_6rd_handler(int ac, char *av[]);
 int ipfw_check_object_name(const char *name);
 int ipfw_check_nat64prefix(const struct in6_addr *prefix, int length);
 

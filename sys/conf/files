@@ -4425,6 +4425,10 @@ netpfil/ipfw/ip_fw_table_algo.c	optional inet ipfirewall
 netpfil/ipfw/ip_fw_table_value.c	optional inet ipfirewall
 netpfil/ipfw/ip_fw_iface.c	optional inet ipfirewall
 netpfil/ipfw/ip_fw_nat.c	optional inet ipfirewall_nat
+netpfil/ipfw/6rd/ip_fw_6rd.c	optional inet inet6 ipfirewall \
+	ipfirewall_6rd
+netpfil/ipfw/6rd/6rd.c	optional inet inet6 ipfirewall \
+	ipfirewall_6rd
 netpfil/ipfw/nat64/ip_fw_nat64.c	optional inet inet6 ipfirewall \
 	ipfirewall_nat64
 netpfil/ipfw/nat64/nat64lsn.c	optional inet inet6 ipfirewall \

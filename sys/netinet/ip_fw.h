@@ -134,6 +134,13 @@ typedef struct _ip_fw3_opheader {
 #define	IP_FW_NPTV6_STATS	154	/* Get NPTv6 instance statistics */
 #define	IP_FW_NPTV6_RESET_STATS	155	/* Reset NPTv6 instance statistics */
 
+#define	IP_FW_6RD_CREATE	156	/* Create 6rd instance */
+#define	IP_FW_6RD_DESTROY	157	/* Destroy 6rd instance */
+#define	IP_FW_6RD_CONFIG	158	/* Modify 6rd instance */
+#define	IP_FW_6RD_LIST		159	/* List 6rd instances */
+#define	IP_FW_6RD_STATS		160	/* Get 6rd instance statistics */
+#define	IP_FW_6RD_RESET_STATS	161	/* Reset 6rd instance statistics */
+
 /*
  * The kernel representation of ipfw rules is made of a list of
  * 'instructions' (for all practical purposes equivalent to BPF

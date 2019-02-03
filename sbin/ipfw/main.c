@@ -349,7 +349,7 @@ ipfw_main(int oldac, char **oldav)
 	 * e.g. "100 add allow ..." instead of "add 100 allow ...".
 	 * In case, swap first and second argument to get the normal form.
 	 */
-	if (ac > 1 && isdigit(*av[0])) {
+	if (ac > 1 && isdigit(*av[0]) && strncmp(*av, "6rd", strlen(*av)) != 0) {
 		char *p = av[0];
 
 		av[0] = av[1];
@@ -425,6 +425,8 @@ ipfw_main(int oldac, char **oldav)
 	if (co.use_set || try_next) {
 		if (_substrcmp(*av, "delete") == 0)
 			ipfw_delete(av);
+		else if (!strncmp(*av, "6rd", strlen(*av)))
+			ipfw_6rd_handler(ac, av);
 		else if (!strncmp(*av, "nat64stl", strlen(*av)))
 			ipfw_nat64stl_handler(ac, av);
 		else if (!strncmp(*av, "nat64lsn", strlen(*av)))

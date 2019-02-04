@@ -1,0 +1,23 @@
+/* Extra stuff that's present on the RPI-B/RPI2 'purple' board. */
+#include "rpi.dts"
+
+&i2c1 {
+
+	rtc@68 {
+		compatible = "dallas,ds1672";
+		reg = <0x68>;
+	};
+
+	eeprom@50 {
+		compatible = "atmel,24c32";
+		reg = <0x50>;
+		pagesize = <32>;
+	};
+
+	eeprom@51 {
+		compatible = "atmel,24c32";
+		reg = <0x51>;
+		pagesize = <32>;
+	};
+};
+

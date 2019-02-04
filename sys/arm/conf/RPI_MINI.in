@@ -68,6 +68,8 @@ device		gpioled
 device		iic
 device		iicbus
 device		bcm2835_bsc
+device		icee			# EEPROM
+device		ds1672			# Dallas - Real Time Clock
 
 device		random			# Entropy device
 
@@ -101,7 +103,7 @@ options 	FDT			# Configure using FDT/DTB data
 
 # This is temporary!
 options 	FDT_DTB_STATIC
-makeoptions	FDT_DTS_FILE=rpi.dts
+makeoptions	FDT_DTS_FILE=rpi-purple.dts
 #
 #
 makeoptions	MODULES_EXTRA="dtb/rpi rpi_ft5406"

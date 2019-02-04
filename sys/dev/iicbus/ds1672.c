@@ -29,6 +29,8 @@ __FBSDID("$FreeBSD$");
 /*
  * Dallas Semiconductor DS1672 RTC sitting on the I2C bus.
  */
+
+#include "opt_platform.h"
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kernel.h>
@@ -38,6 +40,12 @@ __FBSDID("$FreeBSD$");
 #include <sys/bus.h>
 #include <sys/resource.h>
 #include <sys/rman.h>
+#include <sys/sysctl.h>
+
+#ifdef FDT
+#include <dev/ofw/ofw_bus.h>
+#include <dev/ofw/ofw_bus_subr.h>
+#endif
 
 #include <dev/iicbus/iiconf.h>
 
@@ -61,11 +69,50 @@ struct ds1672_softc {
 };
 
 static int
+ds1672_gettime(device_t dev, struct timespec *ts);
+
+static int
+ds1672_sysctl_seconds(SYSCTL_HANDLER_ARGS)
+{
+	int error;
+	uint32_t tod = 0;
+	struct timespec ts;
+	struct ds1672_softc *sc;
+	sc = (struct ds1672_softc*)arg1;
+
+	if ((error = ds1672_gettime(sc->sc_dev, &ts)) != 0)
+		device_printf(sc->sc_dev, "Error reading time of day\n");
+	else
+		tod = (uint32_t)ts.tv_sec;
+
+	error = sysctl_handle_int(oidp, &tod, sizeof(tod), req);
+	if (error != 0 || req->newptr == NULL)
+		return (error);
+
+	return (0);
+}
+
+static int
 ds1672_probe(device_t dev)
 {
-	/* XXX really probe? */
+	/*
+	 * With FDT enabled BUS_PROBE_NOWILDCARD prevents attachment
+	 * even though the data in the device tree says it's here.
+	 * If not using FDT edit device.hints or loader.conf to
+	 * include:
+	 *    hint.ds1672_rtc.0.at="iicbus1"
+	 * This puts the rtc0 on iicbus1
+	 */
+	int rc;
+#ifdef FDT
+	if (!ofw_bus_is_compatible(dev, "dallas,ds1672"))
+		return (ENXIO);
+	rc = BUS_PROBE_GENERIC;
+#else
+	rc = BUS_PROBE_NOWIDLCARD;
+#endif
 	device_set_desc(dev, "Dallas Semiconductor DS1672 RTC");
-	return (BUS_PROBE_NOWILDCARD);
+	return (rc);
 }
 
 static int
@@ -106,7 +153,7 @@ ds1672_init(device_t dev)
 		return (error);
 
 	/*
-	 * Check if oscialltor is not runned.
+	 * Check if oscillator is not running.
 	 */
 	if (ctrl & DS1672_CTRL_EOSC) {
 		device_printf(dev, "RTC oscillator was stopped. Check system"
@@ -128,13 +175,27 @@ ds1672_detach(device_t dev)
 static int
 ds1672_attach(device_t dev)
 {
+	struct sysctl_ctx_list *ctx;
+	struct sysctl_oid *tree_node;
+	struct sysctl_oid_list *tree;
 	struct ds1672_softc *sc = device_get_softc(dev);
-	int error;
 
 	sc->sc_dev = dev;
-	error = ds1672_init(dev);
-	if (error)
-		return (error);
+
+	/*
+	 * On some HW devices (RPI-B I'm talking to you) a kernel panic will
+	 * occur with a message saying "timed sleep before time counters
+	 * enabled" if any iic bus activity is initiated during this attach
+	 * function. Do a lazy init instead to prevent panic().
+	 */
+
+	ctx = device_get_sysctl_ctx(dev);
+	tree_node = device_get_sysctl_tree(dev);
+	tree = SYSCTL_CHILDREN(tree_node);
+	SYSCTL_ADD_PROC(ctx, tree, OID_AUTO, "seconds",
+		CTLTYPE_INT | CTLFLAG_RW, sc, sizeof(*sc),
+		ds1672_sysctl_seconds, "I", "time of day");
+
 	clock_register(dev, 1000);
 	return (0);
 }
@@ -144,6 +205,10 @@ ds1672_gettime(device_t dev, struct timespec *ts)
 {
 	uint8_t secs[4];
 	int error;
+
+	error = ds1672_init(dev);
+	if (error)
+		return (error);
 
 	error = ds1672_read(dev, DS1672_COUNTER, secs, 4);
 	if (error == 0) {
@@ -189,6 +254,6 @@ static driver_t ds1672_driver = {
 };
 static devclass_t ds1672_devclass;
 
-DRIVER_MODULE(ds1672, iicbus, ds1672_driver, ds1672_devclass, 0, 0);
+DRIVER_MODULE_ORDERED(ds1672, iicbus, ds1672_driver, ds1672_devclass, 0, 0, SI_ORDER_ANY);
 MODULE_VERSION(ds1672, 1);
 MODULE_DEPEND(ds1672, iicbus, 1, 1, 1);

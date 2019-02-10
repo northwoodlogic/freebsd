@@ -68,6 +68,7 @@ device		gpioled
 device		iic
 device		iicbus
 device		bcm2835_bsc
+device		iicdts			# TMP100 compatible temp sensor
 device		icee			# EEPROM
 device		ds1672			# Dallas - Real Time Clock
 

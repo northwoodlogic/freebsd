@@ -19,5 +19,11 @@
 		reg = <0x51>;
 		pagesize = <32>;
 	};
+
+	dts@48 {
+		compatible = "ti,tmp100";
+		reg = <0x48>;
+	};
+
 };
 

@@ -25,5 +25,13 @@
 		reg = <0x48>;
 	};
 
+	pmon@40 {
+		compatible = "ti,ina220";
+		reg = <0x40>;
+		cal = <2048>;
+		cfg = <8607>;
+	};
+
+
 };
 

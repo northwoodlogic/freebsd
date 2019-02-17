@@ -69,6 +69,7 @@ device		iic
 device		iicbus
 device		bcm2835_bsc
 device		iicdts			# TMP100 compatible temp sensor
+device		ina220			# INA220 power monitor
 device		icee			# EEPROM
 device		ds1672			# Dallas - Real Time Clock
 

@@ -257,6 +257,22 @@ probe_zfs_currdev(uint64_t guid)
 }
 #endif
 
+#ifdef MD_IMAGE_SIZE
+static bool
+probe_md_currdev()
+{
+	/* defined in md.c */
+	extern struct devsw md_dev;
+
+	char *devname;
+	struct devdesc currdev;
+	currdev.d_dev = &md_dev;
+	currdev.d_unit = 0;
+	set_currdev_devdesc(&currdev);
+	return (sanity_check_currdev());
+}
+#endif
+
 static bool
 try_as_currdev(pdinfo_t *hd, pdinfo_t *pp)
 {
@@ -507,6 +523,11 @@ find_currdev(EFI_LOADED_IMAGE *img, bool do_bootmgr, bool is_last,
 			return (0);
 	}
 #endif /* EFI_ZFS_BOOT */
+
+#ifdef MD_IMAGE_SIZE
+	if (probe_md_currdev())
+		return (0);
+#endif
 
 	/*
 	 * Try to find the block device by its handle based on the

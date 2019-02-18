@@ -41,6 +41,7 @@ options 	TCP_HHOOK		# hhook(9) framework for TCP
 options		TCP_RFC7413		# TCP Fast Open
 options 	SCTP			# Stream Control Transmission Protocol
 options 	FFS			# Berkeley Fast Filesystem
+options 	ZFS			# Sun ZFS
 options 	SOFTUPDATES		# Enable FFS soft updates support
 options 	UFS_ACL			# Support for access control lists
 options 	UFS_DIRHASH		# Improve performance on big directories
@@ -80,6 +81,8 @@ options 	AUDIT			# Security event auditing
 options 	CAPABILITY_MODE		# Capsicum capability mode
 options 	CAPABILITIES		# Capsicum capabilities
 options 	MAC			# TrustedBSD MAC Framework
+options 	MAC_PORTACL		# TrustedBSD MAC Framework
+options 	MAC_NTPD		# TrustedBSD MAC Framework
 options 	KDTRACE_FRAME		# Ensure frames are compiled in
 options 	KDTRACE_HOOKS		# Kernel DTrace hooks
 options 	DDB_CTF			# Kernel ELF linker loads CTF data
@@ -168,7 +171,7 @@ device		aac			# Adaptec FSA RAID
 device		aacp			# SCSI passthrough for aac (requires CAM)
 device		aacraid			# Adaptec by PMC RAID
 device		ida			# Compaq Smart RAID
-device		mfi			# LSI MegaRAID SAS
+#device		mfi			# LSI MegaRAID SAS, use 'mrsas' instead
 device		mlx			# Mylex DAC960 family
 device		mrsas			# LSI/Avago MegaRAID SAS/SATA, 6Gb/s and 12Gb/s
 device		pmspcv			# PMC-Sierra SAS/SATA Controller driver
@@ -270,6 +273,15 @@ device		vge			# VIA VT612x gigabit Ethernet
 device		vr			# VIA Rhine, Rhine II
 device		wb			# Winbond W89C840F
 device		xl			# 3Com 3c90x (``Boomerang'', ``Cyclone'')
+
+# Mellanox ConnectX-3 10GbE/40GbE network adapter
+# Mellanox ConnectX-[4-5] 10/25/40/50/100 GbE
+options COMPAT_LINUXKPI
+options RATELIMIT
+device mlx4
+device mlx4en
+device mlx5
+device mlx5en
 
 # Wireless NIC cards
 device		wlan			# 802.11 support

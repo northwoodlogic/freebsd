@@ -101,8 +101,12 @@ cp ${BOOTDIR}/loader_simp.efi amd64-mini.efi
 rm   -Rf md-boot
 mkdir -p md-boot/boot/defaults
 mkdir -p md-boot/boot/kernel
+
+cp ${BOOTDIR}/device.hints              md-boot/boot/
 cp ${BOOTDIR}/defaults/loader.conf      md-boot/boot/defaults/
 cp ${DESTDIR}.kernel/boot/kernel/kernel md-boot/boot/kernel/
+echo 'hw.mfi.mrsas_enable="1"' >>       md-boot/boot/device.hints
+
 makefs md-boot.img md-boot
 sh ../../sys/tools/embed_mfs.sh amd64-mini.efi md-boot.img
 

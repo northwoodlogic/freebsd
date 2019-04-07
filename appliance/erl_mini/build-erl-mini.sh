@@ -65,9 +65,9 @@ echo "DONE DISTRIBUTE WORLD"
 	# consistent interface naming scheme and identifies physical
 	# interfaces in the system.
 	cat <<- EOT > etc/iface.map
-	gi1:octe0
-	gi2:octe1
-	gi3:octe2
+	eth0:octe0
+	eth1:octe1
+	eth2:octe2
 	EOT
 
 

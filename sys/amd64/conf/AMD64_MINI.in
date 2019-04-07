@@ -21,8 +21,8 @@
 cpu		HAMMER
 ident		AMD64_MINI
 
-# Don't build modules
-makeoptions	MODULES_OVERRIDE=""
+# Don't build modules, except modules that won't link into the kernel.
+makeoptions	MODULES_OVERRIDE="vmm"
 
 makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
 makeoptions	WITH_CTF=1		# Run ctfconvert(1) for DTrace support
@@ -320,9 +320,12 @@ device		rdrand_rng		# Intel Bull Mountain RNG
 device		ether			# Ethernet support
 device		vlan			# 802.1Q VLAN support
 device		tun			# Packet tunnel.
+device		tap			# IP tunnel.
 device		md			# Memory "disks"
 device		gif			# IPv6 and IPv4 tunneling
 device		firmware		# firmware assist module
+device		nmdm			# Fake null-model serial port
+device		if_bridge		# sofware ethernet bridge
 
 # The `bpf' device enables the Berkeley Packet Filter.
 # Be aware of the administrative consequences of enabling this!
@@ -385,4 +388,4 @@ options		GEOM_UZIP
 options 	ROOTDEVNAME=\"ufs:md0.uzip\"	# Default root filesystem.
 
 
-makeoptions	MFS_IMAGE=@mfs_image@
+#makeoptions	MFS_IMAGE=@mfs_image@

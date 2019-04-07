@@ -37,6 +37,14 @@ device		uart
 device		pty
 device		snp
 device		pl011
+device		umodem
+device		ucom
+device		uplcom
+device		uslcom
+device		uether
+device		cdce
+device		ulpt
+
 
 
 # firewall & other things

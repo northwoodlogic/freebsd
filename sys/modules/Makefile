@@ -214,6 +214,7 @@ SUBDIR=	\
 	kgssapi_krb5 \
 	khelp \
 	krpc \
+	ksvf \
 	ksyms \
 	le \
 	lge \

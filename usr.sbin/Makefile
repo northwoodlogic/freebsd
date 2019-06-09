@@ -90,6 +90,7 @@ SUBDIR=	adduser \
 	spray \
 	syslogd \
 	sysrc \
+	svfplay \
 	tcpdrop \
 	tcpdump \
 	traceroute \

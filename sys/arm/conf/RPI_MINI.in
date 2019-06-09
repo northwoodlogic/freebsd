@@ -72,6 +72,9 @@ device		mmcsd
 device		gpio
 device		gpioled
 
+# Kernel JTAG helper
+#device		ksvf_gpio
+
 # I2C
 device		iic
 device		iicbus

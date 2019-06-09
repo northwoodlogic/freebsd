@@ -2318,6 +2318,12 @@ dev/joy/joy_isa.c		optional joy isa
 dev/kbd/kbd.c			optional atkbd | pckbd | sc | ukbd | vt
 dev/kbdmux/kbdmux.c		optional kbdmux
 dev/ksyms/ksyms.c		optional ksyms
+
+# KSVF JTAG Driver(s)
+dev/ksvf/ksvf_gpio.c		optional ksvf_gpio \
+	dependency "gpio_if.h" \
+	dependency "gpiobus_if.h"
+
 dev/le/am7990.c			optional le
 dev/le/am79900.c		optional le
 dev/le/if_le_pci.c		optional le pci

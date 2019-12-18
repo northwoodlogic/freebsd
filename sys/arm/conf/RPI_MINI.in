@@ -115,11 +115,11 @@ options 	FDT			# Configure using FDT/DTB data
 # handed to kernel via U-Boot and ubldr.
 
 # This is temporary!
-options 	FDT_DTB_STATIC
-makeoptions	FDT_DTS_FILE=rpi-purple.dts
+#options 	FDT_DTB_STATIC
+#makeoptions	FDT_DTS_FILE=rpi-purple.dts
 #
 #
-makeoptions	MODULES_EXTRA="dtb/rpi rpi_ft5406"
+makeoptions	MODULES_EXTRA="dtb/rpi ksvf/gpio rpi_ft5406"
 
 
 device		md

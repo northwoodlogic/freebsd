@@ -42,12 +42,12 @@
 	pinctrl-names = "default";
 
 	gpioout: gpioout {
-		brcm,pins = <6>;
+		brcm,pins = <>;
 		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
 	};
 
 	alt0: alt0 {
-		brcm,pins = <4 5 7 8 9 10 11>;
+		brcm,pins = <7 8 9 10 11>;
 		brcm,function = <BCM2835_FSEL_ALT0>;
 	};
 };

@@ -14,6 +14,7 @@ export DESTDIR
 PM=$(sysctl -n hw.ncpu)
 
 # Need to be in top level source directory.
+HERE=$(pwd)
 cd ../../
 
 sed -e "s^@mfs_image@^${MINI_IMG}.uzip^g" \
@@ -77,3 +78,7 @@ unset NO_CLEAN
 make SRCCONF=${SRCCONF} -j${PM} buildkernel
 DESTDIR=${DESTDIR}.kernel make SRCCONF=${SRCCONF} installkernel
 
+# Now build FIT image containing kernel and two device trees. This requires
+# u-boot-tools be installed on the host build machine.
+cd "${HERE}"
+mkimage -f rpi-mini.its rpi-mini.itb

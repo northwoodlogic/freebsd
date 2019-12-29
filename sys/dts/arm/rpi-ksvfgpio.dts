@@ -1,0 +1,16 @@
+/* RPI-B board with bit bang JTAG/SVF player driver */
+#include "rpi.dts"
+
+/ {
+
+	ksvf {
+		status = "okay";
+		compatible = "ksvfgpio";
+
+		tdo-gpios = <&gpio 17 GPIO_ACTIVE_HIGH>;
+		tdi-gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
+		tms-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
+		tck-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
+	};
+};
+

@@ -477,11 +477,15 @@ bcm_gpio_pin_set(device_t dev, uint32_t pin, unsigned int value)
 		if (sc->sc_gpio_pins[i].gp_pin == pin)
 			break;
 	}
-	if (i >= sc->sc_gpio_npins)
+	if (i >= sc->sc_gpio_npins) {
+		device_printf(dev, "PIN: %d out of range\n", pin);
 		return (EINVAL);
+	}
 	/* We never write to read-only/reserved pins. */
-	if (bcm_gpio_pin_is_ro(sc, pin))
+	if (bcm_gpio_pin_is_ro(sc, pin)) {
+		device_printf(dev, "PIN: %d read only\n", pin);
 		return (EINVAL);
+	}
 	BCM_GPIO_LOCK(sc);
 	bank = BCM_GPIO_BANK(pin);
 	if (value)
@@ -631,8 +635,10 @@ bcm_gpio_get_ro_pins(struct bcm_gpio_softc *sc, phandle_t node,
 		OF_prop_free(pins);
 		return (0);
 	}
-	for (i = 0; i < npins; i++)
+	for (i = 0; i < npins; i++) {
+		device_printf(sc->sc_dev, "%s:%s Read Only Pin: %d\n", propname, label, pins[i]);
 		sc->sc_ro_pins[i + sc->sc_ro_npins] = pins[i];
+	}
 	sc->sc_ro_npins += npins;
 	need_comma = 0;
 	device_printf(sc->sc_dev, "%s pins: ", label);

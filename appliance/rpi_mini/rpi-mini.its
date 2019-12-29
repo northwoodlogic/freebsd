@@ -6,11 +6,20 @@
 
 	images {
 		kernel@1 {
-			data = /incbin/("armv6-mini.kernel/boot/kernel/kernel");
+/*
+ * U-Boot decompresses the kernel on extraction to load address. Compression shrinks
+ * the image down by about 6MB. FreeBSD is compatible with the linux ARM boot ABI and
+ * will work with the bootm command.
+ */
+			data = /incbin/("armv6-mini.kernel/boot/kernel/kernel.gz");
 			type = "kernel";
 			arch = "arm";
 			os = "linux";
-			compression = "none";
+			compression = "gzip";
+/*
+ * FreeBSD kernel on ARM can load on any 2MB boundry. Readelf shows the entrypoint
+ * is 0x100 bytes in from the load address.
+ */
 			load  = <0x00200000>;
 			entry = <0x00200100>;
 			hash@1 {
@@ -18,7 +27,7 @@
 			};
 		};
 		fdt@1 {
-			description = "purple";
+			description = "vanilla";
 			data = /incbin/("armv6-mini.kernel/boot/dtb/rpi.dtb");
 			type = "flat_dt";
 			arch = "arm";
@@ -37,6 +46,16 @@
 				algo = "md5";
 			};
 		};
+		fdt@3 {
+			description = "ksvfgpio";
+			data = /incbin/("armv6-mini.kernel/boot/dtb/rpi-ksvfgpio.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			hash@1 {
+				algo = "md5";
+			};
+		};
 	};
 	configurations {
 		rpi {
@@ -45,6 +64,10 @@
 		};
 		purple {
 			fdt = "fdt@2";
+			kernel = "kernel@1";
+		};
+		ksvf {
+			fdt = "fdt@3";
 			kernel = "kernel@1";
 		};
 	};

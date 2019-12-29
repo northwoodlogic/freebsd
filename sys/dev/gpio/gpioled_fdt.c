@@ -121,6 +121,7 @@ gpioleds_attach_led(struct gpioleds_softc *sc, phandle_t node,
 			OF_prop_free(name);
 		return;
 	}
+	device_printf(sc->sc_dev, "  PIN: %d\n", led->pin->pin);
 	gpio_pin_setflags(led->pin, GPIO_PIN_OUTPUT);
 
 	led->leddev = led_create_state(gpioled_control, led, name,
@@ -173,6 +174,7 @@ gpioled_attach(device_t dev)
 			continue;
 		total_leds++;
 	}
+	device_printf(dev, "  Total LEDS: %d\n", total_leds);
 
 	if (total_leds) {
 		sc->sc_leds =  malloc(sizeof(struct gpioled) * total_leds,

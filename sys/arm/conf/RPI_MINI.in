@@ -72,8 +72,11 @@ device		mmcsd
 device		gpio
 device		gpioled
 
-# Kernel JTAG helper
+# Kernel JTAG helper, enabled when module loaded
 #device		ksvf_gpio
+#
+# Kernel JTAG helper, enabled via FDT
+device		ksvf_gpio_fdt
 
 # I2C
 device		iic
@@ -119,7 +122,7 @@ options 	FDT			# Configure using FDT/DTB data
 #makeoptions	FDT_DTS_FILE=rpi-purple.dts
 #
 #
-makeoptions	MODULES_EXTRA="dtb/rpi ksvf/gpio rpi_ft5406"
+makeoptions	MODULES_EXTRA="dtb/rpi ksvf/gpio ksvf/gpio_fdt rpi_ft5406"
 
 
 device		md

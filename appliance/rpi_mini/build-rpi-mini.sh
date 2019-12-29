@@ -17,6 +17,20 @@ PM=$(sysctl -n hw.ncpu)
 HERE=$(pwd)
 cd ../../
 
+if [ ${ENTER_ENV} = "1" ] ; then
+	export SYSDIR=`pwd`/sys
+# when building kernel modules in the interactive shell env the
+# KERNBUILDDIR needs to be set up so things like 'opt_platform.h'
+# are correct.
+#
+#   echo $KERNBUILDDIR
+#   /usr/obj/usr/home/dave/github/freebsd/arm.armv6/sys/RPI_MINI
+
+	export KERNBUILDDIR=/usr/obj`pwd`/arm.armv6/sys/${KERNCONF}
+	make buildenv
+	exit 1
+fi
+
 sed -e "s^@mfs_image@^${MINI_IMG}.uzip^g" \
 	< sys/arm/conf/RPI_MINI.in \
 	> sys/arm/conf/RPI_MINI
@@ -78,7 +92,10 @@ unset NO_CLEAN
 make SRCCONF=${SRCCONF} -j${PM} buildkernel
 DESTDIR=${DESTDIR}.kernel make SRCCONF=${SRCCONF} installkernel
 
-# Now build FIT image containing kernel and two device trees. This requires
+# Now build FIT image containing kernel and a vew device trees. This requires
 # u-boot-tools be installed on the host build machine.
 cd "${HERE}"
+
+# gzip shrinks kernel image down by ~6MB
+gzip armv6-mini.kernel/boot/kernel/kernel
 mkimage -f rpi-mini.its rpi-mini.itb

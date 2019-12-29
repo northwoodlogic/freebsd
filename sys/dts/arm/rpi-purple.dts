@@ -35,3 +35,16 @@
 
 };
 
+/* override activitity LED, B+ uses pin47 with active HI logic. This pin is
+ * marked as read-only in the rpi.dts override and bcm2835 file. */
+/*
+&ledact {
+	gpios = <&gpio 47 GPIO_ACTIVE_HIGH>;
+	default-state = "on";
+}
+*/
+
+/* remove the led output from the list but leave the rest. This is accurate for RPI1 B+ */
+&gpio {
+	broadcom,read-only = <46>, <48>, <49>, <50>, <51>, <52>, <53>;
+}

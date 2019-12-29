@@ -9,11 +9,17 @@
 	compatible = "raspberrypi,model-b", "brcm,bcm2835";
 	model = "Raspberry Pi Model B";
 
+/* b+ uses pin 47 active hi, instead of pin 16 active low. I'm commenting
+ * this out for testing because it seems like the LED driver stuff doesn't
+ * work even thought the pins enumerate OK
+ *
 	leds {
-		act {
+		ledact: act {
 			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
 		};
 	};
+*/
+
 };
 
 &gpio {

@@ -2,7 +2,8 @@
 # DTS files for the Raspberry Pi-B
 DTS=	\
 	rpi.dts \
-	rpi-purple.dts
+	rpi-purple.dts \
+	rpi-ksvfgpio.dts
 
 DTSO=	\
 	spigen-rpi-b.dtso \

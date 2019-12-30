@@ -56,7 +56,18 @@
 				algo = "md5";
 			};
 		};
+		fdt@4 {
+			description = "opto22g4";
+			data = /incbin/("armv6-mini.kernel/boot/dtb/rpi-opto22g4.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			hash@1 {
+				algo = "md5";
+			};
+		};
 	};
+
 	configurations {
 		rpi {
 			fdt = "fdt@1";
@@ -70,7 +81,10 @@
 			fdt = "fdt@3";
 			kernel = "kernel@1";
 		};
+		opto22g4 {
+			fdt = "fdt@4";
+			kernel = "kernel@1";
+		};
 	};
 };
-
 

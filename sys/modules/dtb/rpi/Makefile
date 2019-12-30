@@ -3,7 +3,8 @@
 DTS=	\
 	rpi.dts \
 	rpi-purple.dts \
-	rpi-ksvfgpio.dts
+	rpi-ksvfgpio.dts \
+	rpi-opto22g4.dts
 
 DTSO=	\
 	spigen-rpi-b.dtso \

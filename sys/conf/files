@@ -2329,6 +2329,11 @@ dev/ksvf/ksvf_gpio_fdt.c	optional ksvf_gpio_fdt fdt \
 	dependency "gpio_if.h" \
 	dependency "gpiobus_if.h"
 
+# OPTO22 G4 I/O rack support using FDT configuration
+dev/gpio/gpio_opto22.c		optional gpio_opto22g4 fdt \
+	dependency "gpio_if.h" \
+	dependency "gpiobus_if.h"
+
 dev/le/am7990.c			optional le
 dev/le/am79900.c		optional le
 dev/le/if_le_pci.c		optional le pci

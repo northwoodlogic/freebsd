@@ -1,0 +1,31 @@
+/* RPI 1 B+ rev 1.2 plugged into opto22 relay rack adapter */
+#include "rpi.dts"
+
+/ {
+	opto22g4 {
+		status = "okay";
+		compatible = "opto22g4";
+
+		gpios = <&gpio 21 GPIO_ACTIVE_LOW   /*  [0] - p40 */
+			 &gpio 26 GPIO_ACTIVE_LOW   /*  [1] - p37 */
+			 &gpio 20 GPIO_ACTIVE_LOW   /*  [2] - p38 */
+			 &gpio 19 GPIO_ACTIVE_LOW   /*  [3] - p35 */
+			 &gpio 16 GPIO_ACTIVE_LOW   /*  [4] - p36 */
+			 &gpio 13 GPIO_ACTIVE_LOW   /*  [5] - p33 */
+			 &gpio  6 GPIO_ACTIVE_LOW   /*  [6] - p31 */
+			 &gpio 12 GPIO_ACTIVE_LOW   /*  [7] - p32 */
+			 &gpio  5 GPIO_ACTIVE_LOW   /*  [8] - p29 */
+			 &gpio 25 GPIO_ACTIVE_LOW   /*  [9] - p22 */
+			 &gpio 24 GPIO_ACTIVE_LOW   /* [10] - p18 */
+			 &gpio 22 GPIO_ACTIVE_LOW   /* [11] - p15 */
+			 &gpio 23 GPIO_ACTIVE_LOW   /* [12] - p16 */
+			 &gpio 27 GPIO_ACTIVE_LOW   /* [13] - p13 */
+			 &gpio 17 GPIO_ACTIVE_LOW   /* [14] - p11 */
+			 &gpio  4 GPIO_ACTIVE_LOW>; /* [15] - p7  */
+	};
+};
+
+/* remove the led output from the list but leave the rest. This is accurate for RPI1 B+ */
+&gpio {
+	broadcom,read-only = <46>, <48>, <49>, <50>, <51>, <52>, <53>;
+}

@@ -78,6 +78,9 @@ device		gpioled
 # Kernel JTAG helper, enabled via FDT
 device		ksvf_gpio_fdt
 
+# GPIO bus driver for OPTO22 G4 relay racks
+device		gpio_opto22g4
+
 # I2C
 device		iic
 device		iicbus
@@ -122,7 +125,7 @@ options 	FDT			# Configure using FDT/DTB data
 #makeoptions	FDT_DTS_FILE=rpi-purple.dts
 #
 #
-makeoptions	MODULES_EXTRA="dtb/rpi ksvf/gpio ksvf/gpio_fdt rpi_ft5406"
+makeoptions	MODULES_EXTRA="dtb/rpi ksvf/gpio ksvf/gpio_fdt gpio/gpio_opto22 rpi_ft5406"
 
 
 device		md

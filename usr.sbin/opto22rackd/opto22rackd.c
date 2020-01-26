@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <getopt.h>
 #include <time.h>
+#include <libgpio.h>
 
 #include "opto22rackd.h"
 
@@ -66,9 +67,10 @@ show_help()
         "Usage: -h -i interface\n"
         "  -h --help            Show this help\n"
         "  -i --interface       Select network interface name: default none\n"
-    "  -m --msgid           Integer message id: default 10\n"
-    "  -p --period          Transmit interval (mS): default 100mS\n"
-    "  -f --fg              Don't daemonize, run in forground\n"
+        "  -m --msgid           Integer message id: default 10\n"
+        "  -p --period          Transmit interval (mS): default 100mS\n"
+        "  -l --led             Blink led indicator: default none\n"
+        "  -f --fg              Don't daemonize, run in forground\n"
         "\n"
     );
 }
@@ -156,10 +158,13 @@ int
 main(int argc, char *argv[])
 {
     int c;
+    gpio_handle_t g = GPIO_INVALID_HANDLE;
+
     const char *mc_iface = NULL;
     uint32_t msgid = 10;
     int period = 100 * 1000;
     int fg = 0;
+    int led = -1;
 
     int option_index = 0;
     struct option long_options[] = {
@@ -167,12 +172,13 @@ main(int argc, char *argv[])
         { "interface", required_argument, 0, 'i'  },
         { "msgid",     required_argument, 0, 'm'  },
         { "period",    required_argument, 0, 'p'  },
-    { "fg",        no_argument,       0, 'f'  },
+        { "fg",        no_argument,       0, 'f'  },
+        { "led",       required_argument, 0, 'l'  },
         { NULL,        0,                 0, '\0' }
     };
 
     while ((c = getopt_long(argc, argv,
-        "hi:m:p:f", long_options, &option_index)) != -1)
+        "hi:m:p:fl:", long_options, &option_index)) != -1)
     {
         switch (c) {
         case 'h':
@@ -191,6 +197,10 @@ main(int argc, char *argv[])
         period = atoi(optarg) * 1000;
         break;
 
+    case 'l':
+        led = atoi(optarg);
+        break;
+
     case 'f':
         fg = 1;
         break;
@@ -205,6 +215,14 @@ main(int argc, char *argv[])
     if (mcan == NULL) {
         fprintf(stderr, "Unable to allocate multicast CAN object\n");
         exit(1);
+    }
+
+    if (led > 0) {
+        g = gpio_open(0);
+        if (g == GPIO_INVALID_HANDLE) {
+            fprintf(stderr, "Could not open gpio device\n");
+            led = -1;
+        }
     }
 
     if (fg == 0) {
@@ -229,6 +247,9 @@ main(int argc, char *argv[])
         msg.data[2] = (uint8_t)(iosts >> 16);
         msg.data[3] = (uint8_t)(iosts >> 24);
         mcan_tx(mcan, &msg);
+
+        if (led > 0)
+            gpio_pin_toggle(g, (gpio_pin_t)led);
         
         usleep(period);
     }

@@ -58,6 +58,7 @@ SUBDIR=	adduser \
 	nfsuserd \
 	nmtree \
 	nologin \
+	opto22rackd \
 	pciconf \
 	periodic \
 	pnfsdscopymr \

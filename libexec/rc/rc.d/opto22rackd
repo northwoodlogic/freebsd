@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+
+# PROVIDE: opto22rackd
+# REQUIRE: DAEMON
+# BEFORE:  LOGIN
+# KEYWORD: nojailvnet shutdown
+
+. /etc/rc.subr
+
+name="opto22rackd"
+desc="Industrial I/O Rack Scanner"
+rcvar="opto22rackd_enable"
+command="/usr/sbin/${name}"
+
+load_rc_config $name
+run_rc_command "$1"

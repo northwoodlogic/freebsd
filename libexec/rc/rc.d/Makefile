@@ -87,6 +87,7 @@ CONFS=	DAEMON \
 	nsswitch \
 	ntpdate \
 	${_opensm} \
+	opto22rackd \
 	pf \
 	pflog \
 	pfsync \
